@@ -5,6 +5,7 @@ import { ArrowLeft, Copy, Check, Download } from "lucide-react";
 import pawLogo from "../assets/logo_pap.png";
 import "../styles/downloadPage.min.css";
 import dog_photo from "../assets/dog_golden.jpg";
+import DownloadImage from "./DownloadImage";
 
 export default function DownloadPage() {
   // You can tweak these defaults or load from props/api later
@@ -177,8 +178,8 @@ export default function DownloadPage() {
                 className="rd-btn rd-btn-primary"
                 onClick={cropAndDownload}
               >
-                {/* <Download size={16} />  */}
-                Download Image
+                {/* <DownloadImage size={16} /> */}
+                Generate Image
               </button>
             </div>
           </article>

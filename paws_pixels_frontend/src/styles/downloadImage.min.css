@@ -1,0 +1,56 @@
+:root {
+  --bg:#f9fafb; --text:#0f172a; --muted:#475569; --ring:#e2e8f0; --primary:#2563eb;
+  --shadow:0 8px 24px rgba(2,8,23,.08);
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Inter, system-ui, sans-serif; }
+
+.gi-page { min-height: 100vh; background: var(--bg); color: var(--text); }
+
+/* === Reused header styles === */
+.rd-header{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 28px; border-bottom:1px solid var(--ring); background:#fff;
+}
+.rd-logo{ display:flex; align-items:center; gap:10px; font-weight:700; }
+.rd-logo-img{
+  width:36px; height:36px; border-radius:10px; object-fit:cover;
+  box-shadow:0 4px 18px rgba(2,8,23,.06);
+}
+.rd-logo-text{ font-size:18px; }
+.rd-nav{ display:flex; align-items:center; gap:20px; }
+.rd-nav a{ text-decoration:none; color:var(--text); font-weight:500; }
+.rd-signin{
+  padding:6px 14px; border-radius:8px; border:1px solid var(--primary);
+  background:var(--primary); color:#fff; font-weight:600; cursor:pointer;
+}
+
+/* === Shared button styles === */
+.rd-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  border:1px solid var(--ring); background:#fff; color:var(--text);
+  padding:8px 12px; border-radius:10px; font-weight:700; cursor:pointer;
+}
+.rd-btn:hover{ box-shadow:var(--shadow); }
+.rd-btn-primary{ background:linear-gradient(180deg,#3b82f6,#2563eb); color:#fff; border-color:#2563eb; }
+
+/* === Page layout === */
+.gi-main {
+  max-width: 900px;
+  margin: 24px auto 48px;
+  padding: 0 16px;
+}
+.gi-card{
+  background:#fff; border:1px solid var(--ring); border-radius:14px;
+  box-shadow:var(--shadow); padding:14px;
+}
+.gi-media{
+  width:100%; overflow:hidden; border-radius:10px;
+}
+.gi-media img{
+  width:100%; height:auto; display:block; object-fit:contain;
+}
+.gi-actions{
+  margin-top:12px; display:flex; justify-content:center;
+}
