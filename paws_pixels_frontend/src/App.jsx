@@ -6,6 +6,7 @@ import Syncing from "./components/Syncing";
 import Profile from "./components/Profile";
 import Renditions from "./components/Renditions";
 import Home from "./components/Home";
+import DownloadPage from "./components/DownloadPage";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("connect");
@@ -17,7 +18,8 @@ function App() {
         {/* <Connect /> */}
         {/* <Syncing /> */}
         {/* <Profile /> */}
-        <Renditions />
+        <DownloadPage />
+        {/* <Renditions /> */}
       </div>
     </>
   );

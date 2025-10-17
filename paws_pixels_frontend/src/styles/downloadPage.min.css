@@ -1,0 +1,82 @@
+:root {
+  --bg:#f9fafb; --text:#0f172a; --muted:#475569; --ring:#e2e8f0; --primary:#2563eb;
+  --shadow:0 8px 24px rgba(2,8,23,.08);
+}
+
+*{ box-sizing:border-box; }
+body{ margin:0; font-family: Inter, system-ui, sans-serif; }
+
+.dl-page{ min-height:100vh; background:var(--bg); color:var(--text); }
+
+/* === Header (same as your other pages) === */
+.rd-header{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 28px; border-bottom:1px solid var(--ring); background:#fff;
+}
+.rd-logo{ display:flex; align-items:center; gap:10px; font-weight:700; }
+.rd-logo-img{
+  width:36px; height:36px; border-radius:10px; object-fit:cover;
+  box-shadow:0 4px 18px rgba(2,8,23,.06);
+}
+.rd-logo-text{ font-size:18px; }
+.rd-nav{ display:flex; align-items:center; gap:20px; }
+.rd-nav a{ text-decoration:none; color:var(--text); font-weight:500; }
+.rd-signin{
+  padding:6px 14px; border-radius:8px; border:1px solid var(--primary);
+  background:var(--primary); color:#fff; font-weight:600; cursor:pointer;
+}
+
+/* === Shared buttons (same look) === */
+.rd-btn{
+  display:inline-flex; align-items:center; gap:8px;
+  border:1px solid var(--ring); background:#fff; color:var(--text);
+  padding:8px 12px; border-radius:10px; font-weight:700; cursor:pointer;
+}
+.rd-btn:hover{ box-shadow:var(--shadow); }
+
+/* === Page layout === */
+.dl-main{ max-width:1100px; margin:24px auto 40px; padding:0 16px; }
+.dl-wrap{
+  display:grid; grid-template-columns: 1.2fr 1fr; gap:20px;
+}
+@media (max-width: 900px){ .dl-wrap{ grid-template-columns:1fr; } }
+
+/* === Cards === */
+.dl-card{
+  background:#fff; border:1px solid var(--ring); border-radius:14px;
+  box-shadow:var(--shadow); padding:14px;
+}
+.dl-media-card{ padding:0; overflow:hidden; }
+.dl-media{ width:100%; aspect-ratio:1/1; overflow:hidden; }
+.dl-media img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+.dl-meta{ padding:12px 14px 14px; }
+.dl-label{ font-weight:800; margin-bottom:10px; }
+
+.dl-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+.dl-chip{
+  padding:6px 10px; border:1px solid var(--ring); border-radius:999px;
+  background:#fff; color:#334155; font-weight:700; font-size:12px;
+}
+.dl-chip-soft{
+  background:#eef2ff; color:#4338ca; border-color:#e0e7ff;
+}
+
+/* === Editor === */
+.dl-editor{ display:flex; flex-direction:column; gap:10px; }
+.dl-title{ margin:2px 0 4px; font-size:16px; }
+.dl-caption-preview{
+  border:1px dashed var(--ring); background:#f8fafc;
+  padding:10px; border-radius:10px; font-weight:600; color:#0f172a;
+}
+.dl-label-sm{ font-size:13px; color:var(--muted); }
+.dl-textarea{
+  width:100%; resize:vertical; min-height:90px; border-radius:10px;
+  border:1px solid var(--ring); padding:10px; font-size:14px; outline:none;
+}
+.dl-actions{ display:flex; gap:10px; margin-top:4px; }
+.rd-btn-primary{
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
+  color: #fff;
+  border-color: #2563eb;
+}
