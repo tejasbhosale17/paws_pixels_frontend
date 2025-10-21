@@ -53,7 +53,16 @@ export default function DownloadImage() {
 
           <div className="gi-actions">
             <button className="rd-btn rd-btn-primary" onClick={download}>
-              <Download size={16} /> Download Image
+              {/* <Download size={16} /> */}
+              Download Image
+            </button>
+            <button
+              className="rd-btn rd-btn-success"
+              onClick={download}
+              style={{ marginLeft: "6px" }}
+            >
+              {/* <Download size={16} />  */}
+              Edit
             </button>
           </div>
         </section>

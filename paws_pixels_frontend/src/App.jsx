@@ -19,8 +19,8 @@ function App() {
         {/* <Connect /> */}
         {/* <Syncing /> */}
         {/* <Profile /> */}
-        {/* <DownloadPage /> */}
-        <DownloadImage />
+        <DownloadPage />
+        {/* <DownloadImage /> */}
         {/* <Renditions /> */}
       </div>
     </>
