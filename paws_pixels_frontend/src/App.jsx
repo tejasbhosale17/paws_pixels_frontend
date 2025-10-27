@@ -8,6 +8,7 @@ import Renditions from "./components/Renditions";
 import Home from "./components/Home";
 import DownloadPage from "./components/DownloadPage";
 import DownloadImage from "./components/DownloadImage";
+import FinalChanges from "./components/FinalChanges";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("connect");
@@ -19,7 +20,8 @@ function App() {
         {/* <Connect /> */}
         {/* <Syncing /> */}
         {/* <Profile /> */}
-        <DownloadPage />
+        <FinalChanges />
+        {/* <DownloadPage /> */}
         {/* <DownloadImage /> */}
         {/* <Renditions /> */}
       </div>
