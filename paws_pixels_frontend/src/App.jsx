@@ -9,6 +9,7 @@ import Home from "./components/Home";
 import DownloadPage from "./components/DownloadPage";
 import DownloadImage from "./components/DownloadImage";
 import FinalChanges from "./components/FinalChanges";
+import NewFinalScreen from "./components/NewFinalScreen";
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState("connect");
@@ -17,11 +18,12 @@ function App() {
     <>
       <div className="home">
         {/* <Home /> */}
-        {/* <Connect /> */}
+        <Connect />
         {/* <Syncing /> */}
         {/* <Profile /> */}
-        <FinalChanges />
+        {/* <FinalChanges /> */}
         {/* <DownloadPage /> */}
+        <NewFinalScreen />
         {/* <DownloadImage /> */}
         {/* <Renditions /> */}
       </div>

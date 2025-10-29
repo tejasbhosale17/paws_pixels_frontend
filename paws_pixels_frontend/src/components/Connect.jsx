@@ -17,13 +17,13 @@ const sources = [
   //   subtitle: "Import from boards",
   //   brandClass: "brand brand-pinterest",
   // },
-  {
-    id: "upload",
-    title: "Upload Files",
-    subtitle: "Select photos from your device",
-    brandClass: "brand brand-upload",
-    icon: <Upload size={20} />,
-  },
+  // {
+  //   id: "upload",
+  //   title: "Upload Files",
+  //   subtitle: "Select photos from your device",
+  //   brandClass: "brand brand-upload",
+  //   icon: <Upload size={20} />,
+  // },
 ];
 
 const Connect = () => {
