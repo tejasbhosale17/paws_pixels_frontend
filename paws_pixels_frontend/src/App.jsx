@@ -18,7 +18,7 @@ function App() {
     <>
       <div className="home">
         {/* <Home /> */}
-        <Connect />
+        {/* <Connect /> */}
         {/* <Syncing /> */}
         {/* <Profile /> */}
         {/* <FinalChanges /> */}

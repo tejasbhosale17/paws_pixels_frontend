@@ -3,8 +3,8 @@ import React, { useMemo, useState } from "react";
 import { Check, Copy, Download } from "lucide-react";
 import pawLogo from "../assets/logo_pap.png";
 import "../styles/newFinalScreen.min.css";
-const SRC =
-  "https://images.unsplash.com/photo-1552053831-71594a27632d?w=1600&auto=format&fit=crop";
+import dog_golden from "../assets/dog_golden.jpg";
+const SRC = dog_golden; // Replace with actual image URL or prop
 
 export default function NewFinalScreen() {
   // Base caption + user inputs
@@ -183,7 +183,7 @@ export default function NewFinalScreen() {
                   {copied ? "Copied" : "Copy Caption"}
                 </button>
                 <button className="rd-btn rd-btn-primary" onClick={fuseImage}>
-                  Fuse Image
+                  Submit
                 </button>
               </div>
             </div>
