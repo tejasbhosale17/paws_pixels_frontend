@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { Download } from "lucide-react";
 import pawLogo from "../assets/logo_pap.png"; // adjust the path if needed
 import "../styles/downloadImage.min.css";
-import dog_socialmedia_ready_photo from "../assets/dog_socialmedia_ready.png";
+import dog_socialmedia_ready_photo from "../assets/gemini_second_output.png";
 import { useNavigate } from "react-router-dom";
 // ...
 

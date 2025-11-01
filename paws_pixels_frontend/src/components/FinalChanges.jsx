@@ -42,14 +42,14 @@ export default function FinalChanges() {
             <figure className="cf-photo cf-photo-fused">
               <img src={IMG_gemini} alt="Fused preview" />
             </figure>
-            <div className="download-img">
+            {/* <div className="download-img">
               <button
                 className="rd-btn rd-btn-primary"
                 style={{ marginLeft: "40%" }}
               >
                 Download Image
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* Right column: caption panel (static UI) */}
@@ -67,8 +67,12 @@ export default function FinalChanges() {
               </div>
               <div className="cf-cap-preview">Description/ Narrative</div>
               <div className="p" style={{ marginBottom: "40px" }}>
-                A sunny afternoon at the park - tongue out, tail wagging, and
-                zero worries!
+                The sunniest of smiles tells the whole story: this dog is on
+                cloud nine! With a full belly from his favorite meal and the
+                sheer joy of a long walk still buzzing in his paws, he's a happy
+                blur of golden energy. Every wag of his tail is an
+                invitation—it's going to be a playful afternoon of fetch and
+                fun!
               </div>
 
               <div
@@ -77,15 +81,22 @@ export default function FinalChanges() {
               >
                 your input optional
               </div>
-              <textarea
+              <input
+                className="cf-input"
+                type="text"
+                rows={15}
+                placeholder="Add description or narrative (optional)"
+              ></input>
+              {/* <textarea
                 className="cf-textarea"
                 rows={7}
                 placeholder="Add hashtag, and other information"
                 readOnly
-              />
+              /> */}
 
               <div className="cf-actions">
-                <button className="rd-btn">Copy Caption</button>
+                <button className="rd-btn">Copy Description</button>
+                <button className="rd-btn">Save</button>
                 <button className="rd-btn rd-btn-primary">Fuse Image</button>
               </div>
             </div>

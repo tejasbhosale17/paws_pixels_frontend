@@ -21,9 +21,9 @@ function App() {
         {/* <Connect /> */}
         {/* <Syncing /> */}
         {/* <Profile /> */}
-        {/* <FinalChanges /> */}
+        <FinalChanges />
         {/* <DownloadPage /> */}
-        <NewFinalScreen />
+        {/* <NewFinalScreen /> */}
         {/* <DownloadImage /> */}
         {/* <Renditions /> */}
       </div>
