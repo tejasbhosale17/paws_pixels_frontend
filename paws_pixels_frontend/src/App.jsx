@@ -21,8 +21,8 @@ function App() {
         {/* <Connect /> */}
         {/* <Syncing /> */}
         {/* <Profile /> */}
-        <FinalChanges />
-        {/* <DownloadPage /> */}
+        {/* <FinalChanges /> //second screen needed final screen after image generation */}
+        <DownloadPage />
         {/* <NewFinalScreen /> */}
         {/* <DownloadImage /> */}
         {/* <Renditions /> */}

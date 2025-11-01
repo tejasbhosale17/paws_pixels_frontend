@@ -6,105 +6,187 @@ import pawLogo from "../assets/logo_pap.png";
 import "../styles/downloadPage.min.css";
 import dog_photo from "../assets/dog_golden.jpg";
 import DownloadImage from "./DownloadImage";
-
+const SRC = dog_photo;
 export default function DownloadPage() {
   // You can tweak these defaults or load from props/api later
-  const ratio = { w: 4, h: 5 };
-  const label = "4:5 • Portrait";
-  const src = dog_photo;
-  const baseCaption = "Hanging out with my favorite furball 🐾";
-  const tags = ["pets", "cute", "golden", "fetch"];
-  const moods = ["playful", "sunny", "energetic"];
+  const [caption, setCaption] = useState(
+    "Hanging out with my favorite furball 🐾"
+  );
+  const STATIC_NARRATION =
+    "The sunniest of smiles tells the whole story: this dog is on cloud nine! With a full belly from his favorite meal and the sheer joy of a long walk still buzzing in his paws, he's a happy blur of golden energy. Every wag of his tail is an invitation—it's going to be a playful afternoon of fetch and fun!";
+  const [userNarration, setUserNarration] = useState(""); // user-added narration/description
 
-  const [extra, setExtra] = useState("");
+  const [fused, setFused] = useState(""); // dataURL of fused result
   const [copied, setCopied] = useState(false);
 
-  const finalCaption = useMemo(() => {
-    const add = extra.trim();
-    return add ? `${baseCaption} ${add}` : baseCaption;
-  }, [baseCaption, extra]);
+  // What "Copy Caption" should copy
+  const captionForCopy = useMemo(() => {
+    return userNarration.trim()
+      ? `${caption}\n\n${userNarration.trim()}`
+      : caption;
+  }, [caption, userNarration]);
 
-  const aspect = `${ratio.w} / ${ratio.h}`;
-
-  const copyCaption = async () => {
+  async function copyCaption() {
     try {
-      await navigator.clipboard.writeText(finalCaption);
+      await navigator.clipboard.writeText(captionForCopy);
       setCopied(true);
       setTimeout(() => setCopied(false), 1200);
     } catch {}
-  };
-  // Center-biased crop (slightly upward to prefer faces) to the selected ratio, then download
-  const cropAndDownload = async () => {
-    const img = await loadImage(src);
-    const r = ratio.w / ratio.h;
-    const iw = img.naturalWidth;
-    const ih = img.naturalHeight;
+  }
 
-    // Focal bias (50% x, 35% y) to keep faces that are often a bit higher in the frame
-    const fx = 0.5,
-      fy = 0.35;
+  // ----- Canvas helpers -----
+  function loadImage(url) {
+    return new Promise((res, rej) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => res(img);
+      img.onerror = rej;
+      img.src = url;
+    });
+  }
 
-    let cw, ch;
-    if (iw / ih > r) {
-      // too wide → crop width
-      ch = ih;
-      cw = Math.round(ch * r);
+  function roundRect(ctx, x, y, w, h, r) {
+    const rr = Math.min(r, w / 2, h / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + rr, y);
+    ctx.arcTo(x + w, y, x + w, y + h, rr);
+    ctx.arcTo(x + w, y + h, x, y + h, rr);
+    ctx.arcTo(x, y + h, x, y, rr);
+    ctx.arcTo(x, y, x + w, y, rr);
+    ctx.closePath();
+  }
+
+  function wrapLines(ctx, text, maxWidth) {
+    if (!text) return [];
+    const words = text.split(/\s+/);
+    const lines = [];
+    let line = "";
+    for (let i = 0; i < words.length; i++) {
+      const test = line ? line + " " + words[i] : words[i];
+      if (ctx.measureText(test).width > maxWidth && line) {
+        lines.push(line);
+        line = words[i];
+      } else {
+        line = test;
+      }
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  // ----- Fuse Image (caption + optional user narration) -----
+  async function fuseImage() {
+    const img = await loadImage(SRC);
+
+    const outW = 1280;
+    const outH =
+      Math.round((img.naturalHeight / img.naturalWidth) * outW) || 853;
+
+    const scale = Math.min(window.devicePixelRatio || 1, 2);
+    const canvas = document.createElement("canvas");
+    canvas.width = outW * scale;
+    canvas.height = outH * scale;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
+
+    // Draw image cover with slight upward bias
+    const iw = img.naturalWidth,
+      ih = img.naturalHeight;
+    const rImg = iw / ih,
+      rOut = outW / outH;
+    let sx, sy, sw, sh;
+    if (rImg > rOut) {
+      sh = ih;
+      sw = Math.round(sh * rOut);
+      sx = Math.round((iw - sw) / 2);
+      sy = 0;
     } else {
-      // too tall → crop height
-      cw = iw;
-      ch = Math.round(cw / r);
+      sw = iw;
+      sh = Math.round(sw / rOut);
+      sx = 0;
+      sy = Math.round((ih - sh) / 5);
+    }
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outW, outH);
+
+    // Text metrics
+    const pad = 24;
+    const maxTextWidth = outW - pad * 2;
+    const centerX = outW / 2;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.shadowColor = "rgba(0,0,0,0.35)";
+    ctx.shadowBlur = 6;
+    ctx.fillStyle = "#fff";
+
+    // Measure lines first to size gradient panel
+    const captionFont =
+      "700 36px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    const noteFont =
+      "600 20px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    const lhCaption = 42;
+    const lhNote = 26;
+    const gap = userNarration.trim() ? 10 : 0;
+
+    ctx.font = captionFont;
+    const captionLines = wrapLines(ctx, caption, maxTextWidth);
+
+    ctx.font = noteFont;
+    const noteLines = userNarration.trim()
+      ? wrapLines(ctx, userNarration.trim(), maxTextWidth)
+      : [];
+
+    const totalTextHeight =
+      captionLines.length * lhCaption + gap + noteLines.length * lhNote;
+
+    // Dynamic gradient panel behind text
+    const panelPadY = 20;
+    const panelH = totalTextHeight + panelPadY * 1.8;
+    const panelTop = outH - panelH - pad / 2;
+
+    const grd = ctx.createLinearGradient(0, panelTop, 0, outH);
+    grd.addColorStop(0, "rgba(0,0,0,0.00)");
+    grd.addColorStop(1, "rgba(0,0,0,0.62)");
+    ctx.fillStyle = grd;
+    roundRect(ctx, pad, panelTop, outW - pad * 2, panelH, 22);
+    ctx.fill();
+
+    // Draw text
+    let y = outH - panelH + panelPadY;
+    ctx.fillStyle = "#fff";
+
+    ctx.font = captionFont;
+    for (const line of captionLines) {
+      ctx.fillText(line, centerX, y);
+      y += lhCaption;
     }
 
-    let x = Math.round(iw * fx - cw / 2);
-    let y = Math.round(ih * fy - ch / 2);
-    x = Math.max(0, Math.min(iw - cw, x));
-    y = Math.max(0, Math.min(ih - ch, y));
-
-    // Output sizes for common social ratios
-    let outW = 1080,
-      outH = 1080; // default square
-    const { w, h } = ratio;
-    if (w === 4 && h === 5) {
-      outW = 1080;
-      outH = 1350;
-    } else if (w === 16 && h === 9) {
-      outW = 1920;
-      outH = 1080;
-    } else if (w === 9 && h === 16) {
-      outW = 1080;
-      outH = 1920;
-    } else if (w === 1 && h === 1) {
-      outW = 1080;
-      outH = 1080;
-    } else {
-      // generic fallback
-      if (r >= 1) {
-        outW = 1280;
-        outH = Math.round(1280 / r);
-      } else {
-        outW = 1080;
-        outH = Math.round(1080 / r);
+    if (noteLines.length) {
+      y += gap;
+      ctx.font = noteFont;
+      for (const line of noteLines) {
+        ctx.fillText(line, centerX, y);
+        y += lhNote;
       }
     }
 
-    const canvas = document.createElement("canvas");
-    canvas.width = outW;
-    canvas.height = outH;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(img, x, y, cw, ch, 0, 0, outW, outH);
+    setFused(canvas.toDataURL("image/jpeg", 0.95));
+  }
 
-    const url = canvas.toDataURL("image/jpeg", 0.95);
+  // Download fused image
+  const downloadFused = () => {
+    if (!fused) return;
     const a = document.createElement("a");
-    a.href = url;
-    a.download = `${label.replace(/\s+/g, "_")}.jpg`;
+    a.href = fused;
+    a.download = "fused.jpg";
     document.body.appendChild(a);
     a.click();
     a.remove();
   };
 
   return (
-    <div className="dl-page">
-      {/* Header (same look & logo) */}
+    <div className="cf-page">
+      {/* Header (same) */}
       <header className="rd-header">
         <div className="rd-logo">
           <img src={pawLogo} alt="Paws & Pixels" className="rd-logo-img" />
@@ -118,71 +200,115 @@ export default function DownloadPage() {
         </nav>
       </header>
 
-      <main className="dl-main">
-        <section className="dl-wrap">
-          {/* Left: rendition + meta */}
-          <article className="dl-card dl-media-card">
-            <div className="dl-media" style={{ aspectRatio: aspect }}>
-              <img
-                src={src}
-                alt={label}
-                style={{ objectFit: "cover", objectPosition: "50% 35%" }}
-              />
+      <main className="cf-main">
+        <section className="cf-grid">
+          {/* Left: original + fused preview + download */}
+          <div className="cf-left">
+            <div className="cf-photo">
+              <img src={SRC} alt="Original" />
             </div>
 
-            <div className="dl-meta">
-              <div className="dl-label">{label}</div>
-
-              <div className="dl-chips">
-                {tags.map((t) => (
-                  <span key={t} className="dl-chip">
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              <div className="dl-chips">
-                {moods.map((m) => (
-                  <span key={m} className="dl-chip dl-chip-soft">
-                    {m}
-                  </span>
-                ))}
-              </div>
+            <div className="cf-photo">
+              {fused ? (
+                <img src={fused} alt="Fused result" />
+              ) : (
+                <div
+                  className="cf-empty"
+                  style={{ margin: "100px 237px", backgroundColor: "#f3f4f6" }}
+                >
+                  Fused image will appear here
+                </div>
+              )}
             </div>
-          </article>
 
-          {/* Right: caption editor */}
-          <article className="dl-card dl-editor">
-            <h3 className="dl-title">Caption</h3>
-
-            <div className="dl-caption-preview">{finalCaption}</div>
-
-            <label className="dl-label-sm" htmlFor="extra">
-              Add to caption
-            </label>
-            <textarea
-              id="extra"
-              className="dl-textarea"
-              placeholder="Add hashtags, CTA, location…"
-              value={extra}
-              onChange={(e) => setExtra(e.target.value)}
-              rows={4}
-            />
-
-            <div className="dl-actions">
-              <button className="rd-btn" onClick={copyCaption}>
-                {copied ? <Check size={16} /> : <Copy size={16} />}
-                {copied ? "Copied" : "Copy Caption"}
-              </button>
+            {/* <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: 10,
+              }}
+            >
               <button
                 className="rd-btn rd-btn-primary"
-                onClick={cropAndDownload}
+                onClick={downloadFused}
+                disabled={!fused}
+                title={
+                  fused
+                    ? "Download fused image"
+                    : "Create the fused image first"
+                }
               >
-                {/* <DownloadImage size={16} /> */}
-                Generate Image
+                <Download size={16} /> Download
               </button>
+            </div> */}
+          </div>
+
+          {/* Right: UPDATED editor */}
+          <div className="cf-right">
+            <div className="cf-panel">
+              {/* 1) Editable caption textbox */}
+              <div
+                className="cf-label"
+                style={{ fontWeight: 700, fontSize: "larger" }}
+              >
+                Caption
+              </div>
+              <input
+                className="cf-input"
+                type="text"
+                value={caption}
+                onChange={(e) => setCaption(e.target.value)}
+                placeholder="Type your caption…"
+              />
+
+              {/* 2) Non-editable narration (given text) */}
+              <div
+                className="cf-label"
+                style={{ fontWeight: 700, fontSize: "larger" }}
+              >
+                Narration
+              </div>
+              <textarea
+                className="cf-textarea cf-textarea-readonly"
+                value={STATIC_NARRATION}
+                readOnly
+                rows={6}
+              />
+
+              {/* 3) User narration input box */}
+              <div
+                className="cf-label"
+                style={{
+                  fontWeight: 700,
+                  fontSize: "larger",
+                  marginTop: "12px",
+                }}
+              >
+                Add your narration
+              </div>
+              <textarea
+                className="cf-textarea"
+                placeholder="Write your description or narration…"
+                rows={5}
+                value={userNarration}
+                onChange={(e) => setUserNarration(e.target.value)}
+              />
+
+              {/* 4) Action buttons */}
+              <div className="cf-actions">
+                <button className="rd-btn" onClick={copyCaption}>
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
+                  {copied ? "Copied" : "Copy Caption"}
+                </button>
+                <button className="rd-btn rd-btn-primary" onClick={fuseImage}>
+                  Submit
+                </button>
+                <button className="rd-btn rd-btn-primary" onClick={fuseImage}>
+                  Fuse Image
+                </button>
+              </div>
             </div>
-          </article>
+          </div>
         </section>
       </main>
     </div>

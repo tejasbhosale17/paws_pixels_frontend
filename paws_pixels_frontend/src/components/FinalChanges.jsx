@@ -40,7 +40,11 @@ export default function FinalChanges() {
             </figure>
 
             <figure className="cf-photo cf-photo-fused">
-              <img src={IMG_gemini} alt="Fused preview" />
+              <img
+                src={IMG_gemini}
+                alt="Fused preview"
+                placeholder="Fused preview"
+              />
             </figure>
             {/* <div className="download-img">
               <button
